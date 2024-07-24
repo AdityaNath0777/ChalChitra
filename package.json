@@ -1,34 +1,16 @@
 {
-  "name": "shikanji-backend",
+  "name": "chalchitra",
   "version": "1.0.0",
-  "description": "a backend course in JavaScript with professional and industry level approach while enjoying some Shikanji",
-  "type": "module",
+  "description": "A Full-Stack project similar to youtube and twitter(X) using MERN",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon -r dotenv/config --experimental-json-modules src/index.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    "JavaScript",
-    "backend",
-    "chai",
-    "shikanji"
+    "chalchitra",
+    "chitra",
+    "MERN"
   ],
-  "author": "Aditya Nath",
-  "license": "ISC",
-  "devDependencies": {
-    "nodemon": "^3.1.4",
-    "prettier": "^3.3.3"
-  },
-  "dependencies": {
-    "bcrypt": "^5.1.1",
-    "cloudinary": "^2.3.0",
-    "cookie-parser": "^1.4.6",
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
-    "express": "^4.19.2",
-    "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.5.1",
-    "mongoose-aggregate-paginate-v2": "^1.1.1",
-    "multer": "^1.4.5-lts.1"
-  }
+  "author": "AdityaNath0777",
+  "license": "ISC"
 }
