@@ -5,6 +5,7 @@ import { Login, Navbar, Profile } from "./components/index";
 
 function App() {
   const [user, setUser] = useState({});
+  const [error, setError] = useState({});
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const loginUser = async (loginInfo) => {
@@ -24,7 +25,6 @@ function App() {
       if (!res.ok) {
         console.log("Error while fetching", res);
         throw new Error(`Response not okay :: Status :: ${res.status}`);
-        return;
       }
 
       const result = await res.json();
@@ -32,10 +32,16 @@ function App() {
 
       setUser(newUser);
       setIsLoggedIn(true);
+      setError({
+        message: "",
+        status: "",
+      });
     } catch (error) {
       console.log("Login Failed!!!", error.message);
+      setError(error);
     }
   };
+
   const logoutUser = async () => {
     try {
       const res = await fetch("/api/v1/users/logout", {
@@ -54,7 +60,13 @@ function App() {
     } catch (error) {
       console.log("Logout failed :: ", error.message);
     }
+
+    setError({
+      message: "",
+      status: "",
+    });
   };
+
   const updateUser = () => {};
 
   // useEffect -> to fetch details of currently logged in user
@@ -83,10 +95,14 @@ function App() {
     }
 
     getCurrentUser();
+    setError({
+      message: "",
+      status: "",
+    });
   }, []);
 
   return (
-    <UserProvider value={{ user, loginUser, logoutUser, updateUser }}>
+    <UserProvider value={{ user, error, loginUser, logoutUser, updateUser }}>
       {!isLoggedIn && (
         <div className="w-full mx-auto mt-10">
           <h1 className="text-4xl text-center main-font">ChalChitra</h1>
@@ -95,7 +111,7 @@ function App() {
           </div>
         </div>
       )}
-      
+
       {isLoggedIn && (
         <div className="my-container grid grid-cols-6 relative">
           <div className="col-span-1 relative">
