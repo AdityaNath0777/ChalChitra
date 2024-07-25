@@ -1,9 +1,14 @@
-import React from 'react'
+import React from "react";
+import { Logout, Navbar } from "./index";
 
 const Profile = () => {
   return (
-    <div>Profile</div>
-  )
-}
+    <div>
+      Profile
+      <Navbar />
+      <Logout />
+    </div>
+  );
+};
 
-export default Profile
+export default Profile;
