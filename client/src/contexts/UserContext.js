@@ -22,9 +22,9 @@ export const UserContext = createContext({
 
 
   // functionalities
-  loginUser: ({ email, password }) => {},
-  logoutUser: () => {},
-  updateUser: (newUser) => {},
+  loginUser: async ({ email, password }) => {},
+  logoutUser: async () => {},
+  updateUser: async (newUser) => {},
 });
 
 
@@ -32,7 +32,7 @@ export const UserContext = createContext({
 export const useUser = () => {
 
   // return another Hook to make aware about context
-  useContext(UserContext)
+  return useContext(UserContext)
 };
 
 export const UserProvider = UserContext.Provider;
