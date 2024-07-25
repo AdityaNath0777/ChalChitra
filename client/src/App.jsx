@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "./App.css";
-import { UserContext, UserProvider } from "./contexts";
-import { Login, Logout, Profile, Navbar } from "./components/index";
+import { UserProvider } from "./contexts";
+import { Login, Navbar, Profile } from "./components/index";
 
 function App() {
   const [user, setUser] = useState({});
@@ -73,30 +73,39 @@ function App() {
         }
 
         const result = await res.json();
-        
+
         // here our user data is in result.data
-        setUser(result.data)
-        setIsLoggedIn(true)
+        setUser(result.data);
+        setIsLoggedIn(true);
       } catch (error) {
         console.log("Could not get current user :: ", error);
       }
     }
 
-    getCurrentUser()
+    getCurrentUser();
   }, []);
 
   return (
     <UserProvider value={{ user, loginUser, logoutUser, updateUser }}>
-      <div className="w-4/5 mx-auto">
-        <h1 className="text-4xl text-center">ChalChitra</h1>
-        {!isLoggedIn && (
+      {!isLoggedIn && (
+        <div className="w-full mx-auto mt-10">
+          <h1 className="text-4xl text-center main-font">ChalChitra</h1>
           <div className="w-2/5 mx-auto py-4">
             <Login />
           </div>
-        )}
-
-        {isLoggedIn && <Profile />}
-      </div>
+        </div>
+      )}
+      
+      {isLoggedIn && (
+        <div className="my-container grid grid-cols-6 relative">
+          <div className="col-span-1 relative">
+            <Navbar />
+          </div>
+          <div className="col-span-5">
+            <Profile />
+          </div>
+        </div>
+      )}
     </UserProvider>
   );
 }
