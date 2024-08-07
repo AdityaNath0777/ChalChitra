@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import { UserProvider } from "./contexts";
-import { Login, Navbar, Profile } from "./components/index";
+import { Login, Navbar, Profile, Signin } from "./components/index";
 
 function App() {
   const [user, setUser] = useState({});
   const [error, setError] = useState({});
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isRegistered, setIsRegistered] = useState(false);
 
   const loginUser = async (loginInfo) => {
     try {
@@ -67,7 +68,7 @@ function App() {
     });
   };
 
-  const updateUser = () => {};
+  const updateUser = async () => {};
 
   // useEffect -> to fetch details of currently logged in user
   // whenever this component reloads
@@ -101,9 +102,58 @@ function App() {
     });
   }, []);
 
+  const registerUser = async (signinInfo) => {
+    // register user logic
+    try {
+      // console.log(signinInfo);
+      const test = new FormData();
+
+      const formData = new FormData();
+
+      // Append regular fields
+      formData.append("fullName", signinInfo.fullName);
+      formData.append("email", signinInfo.email);
+      formData.append("username", signinInfo.username);
+      formData.append("password", signinInfo.password);
+
+      if (signinInfo.avatar) {
+        formData.append("avatar", signinInfo.avatar); // Use the file object directly
+      }
+      if (signinInfo.coverImage) {
+        formData.append("coverImage", signinInfo.coverImage); // Use the file object directly
+      }
+      console.log("test: ", formData);
+      const config = {
+        method: "POST",
+        body: formData,
+        credentials: "include",
+      };
+
+      const res = await fetch("/api/v1/users/register", config);
+      console.log(res);
+      if (!res.ok) {
+        throw new Error(`response not okay: status: ${res.status}`);
+      }
+      const result = await res.json();
+      const data = result?.data || "Register response :: Data not found 🥸";
+      console.log(data);
+      setIsRegistered(true);
+    } catch (error) {
+      console.log("Register User :: Error :: ", error);
+    }
+  };
+
   return (
-    <UserProvider value={{ user, error, loginUser, logoutUser, updateUser }}>
-      {!isLoggedIn && (
+    <UserProvider
+      value={{ user, error, registerUser, loginUser, logoutUser, updateUser }}
+    >
+      <div className="w-full mx-auto mt-10">
+        <h1 className="text-4xl text-center main-font">ChalChitra</h1>
+        <div className="w-2/5 mx-auto py-4">
+          <Signin />
+        </div>
+      </div>
+      {/* {!isLoggedIn && (
         <div className="w-full mx-auto mt-10">
           <h1 className="text-4xl text-center main-font">ChalChitra</h1>
           <div className="w-2/5 mx-auto py-4">
@@ -121,7 +171,7 @@ function App() {
             <Profile />
           </div>
         </div>
-      )}
+      )} */}
     </UserProvider>
   );
 }
