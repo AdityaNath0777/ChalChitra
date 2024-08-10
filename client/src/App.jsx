@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import { UserProvider } from "./contexts";
-import { Login, Navbar, Profile, Signin } from "./components/index";
+import { Button, Login, Navbar, Profile, Signin } from "./components/index";
 
 function App() {
   const [user, setUser] = useState({});
@@ -90,6 +90,7 @@ function App() {
         // here our user data is in result.data
         setUser(result.data);
         setIsLoggedIn(true);
+        setIsRegistered(true);
       } catch (error) {
         console.log("Could not get current user :: ", error);
       }
@@ -147,17 +148,32 @@ function App() {
     <UserProvider
       value={{ user, error, registerUser, loginUser, logoutUser, updateUser }}
     >
+
+    {!isRegistered && (
       <div className="w-full mx-auto mt-10">
         <h1 className="text-4xl text-center main-font">ChalChitra</h1>
         <div className="w-2/5 mx-auto py-4">
           <Signin />
+          <Button
+        onClick={() => setIsRegistered(true)}
+      >
+        Already have an account? 
+        Login
+      </Button>
         </div>
       </div>
-      {/* {!isLoggedIn && (
+    )}
+      {!isLoggedIn && isRegistered && (
         <div className="w-full mx-auto mt-10">
           <h1 className="text-4xl text-center main-font">ChalChitra</h1>
           <div className="w-2/5 mx-auto py-4">
             <Login />
+            <Button
+        onClick={() => setIsRegistered(false)}
+      >
+        Don't have an account? 
+        Sign In
+      </Button>
           </div>
         </div>
       )}
@@ -171,7 +187,7 @@ function App() {
             <Profile />
           </div>
         </div>
-      )} */}
+      )}
     </UserProvider>
   );
 }
