@@ -4,5 +4,5 @@ import Logout from "./Logout";
 import Profile from "./Profile";
 import Button from "./Button";
 import Signin from "./Signin";
-
-export { Navbar, Login, Signin, Logout, Profile, Button };
+import UpdateProfile from "./UpdateProfile";
+export { Navbar, Login, Signin, Logout, Profile, UpdateProfile, Button };

@@ -6,6 +6,7 @@ export const UserContext = createContext({
   user: {
     _id: "",                  // string
     username: "",             // string
+    fullName: "",             // string
     email: "",                // string
     avatar: "",               // string (url)
     coverImage: "",           // string (url)

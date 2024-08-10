@@ -1,13 +1,21 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import { UserProvider } from "./contexts";
-import { Button, Login, Navbar, Profile, Signin } from "./components/index";
+import {
+  Button,
+  Login,
+  Navbar,
+  Profile,
+  Signin,
+  UpdateProfile,
+} from "./components/index";
 
 function App() {
   const [user, setUser] = useState({});
   const [error, setError] = useState({});
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isRegistered, setIsRegistered] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   const loginUser = async (loginInfo) => {
     try {
@@ -68,7 +76,35 @@ function App() {
     });
   };
 
-  const updateUser = async () => {};
+  const updateUser = async (userInfo) => {
+    console.log("before: ", userInfo);
+    try {
+      const user = {
+        _id: userInfo._id,
+        fullName: userInfo.fullName,
+        email: userInfo.email,
+      };
+      const config = {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(user),
+      };
+      const res = await fetch("/api/v1/users/update-account", config);
+
+      if (!res.ok) {
+        console.log("Error ");
+      } else {
+        const result = await res.json();
+        const data = result.data;
+        setUser(data);
+        setIsUpdating(false);
+      }
+    } catch (error) {
+      console.log("update Error :: ", error);
+    }
+  };
 
   // useEffect -> to fetch details of currently logged in user
   // whenever this component reloads
@@ -148,32 +184,25 @@ function App() {
     <UserProvider
       value={{ user, error, registerUser, loginUser, logoutUser, updateUser }}
     >
-
-    {!isRegistered && (
-      <div className="w-full mx-auto mt-10">
-        <h1 className="text-4xl text-center main-font">ChalChitra</h1>
-        <div className="w-2/5 mx-auto py-4">
-          <Signin />
-          <Button
-        onClick={() => setIsRegistered(true)}
-      >
-        Already have an account? 
-        Login
-      </Button>
+      {!isRegistered && (
+        <div className="w-full mx-auto mt-10">
+          <h1 className="text-4xl text-center main-font">ChalChitra</h1>
+          <div className="w-2/5 mx-auto py-4">
+            <Signin />
+            <Button onClick={() => setIsRegistered(true)}>
+              Already have an account? Login
+            </Button>
+          </div>
         </div>
-      </div>
-    )}
+      )}
       {!isLoggedIn && isRegistered && (
         <div className="w-full mx-auto mt-10">
           <h1 className="text-4xl text-center main-font">ChalChitra</h1>
           <div className="w-2/5 mx-auto py-4">
             <Login />
-            <Button
-        onClick={() => setIsRegistered(false)}
-      >
-        Don't have an account? 
-        Sign In
-      </Button>
+            <Button onClick={() => setIsRegistered(false)}>
+              Don't have an account? Sign In
+            </Button>
           </div>
         </div>
       )}
@@ -184,7 +213,16 @@ function App() {
             <Navbar />
           </div>
           <div className="col-span-5">
-            <Profile />
+            {isUpdating ? (
+              <UpdateProfile />
+            ) : (
+              <>
+                <Profile />
+                <Button onClick={() => setIsUpdating(true)}>
+                  Update Account Details
+                </Button>
+              </>
+            )}
           </div>
         </div>
       )}
