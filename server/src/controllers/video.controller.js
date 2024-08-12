@@ -160,7 +160,7 @@ const getAllVideos = asyncHandler(async (req, res) => {
   const options = {
     page: page,
     limit: limit,
-    sort: {}
+    sort: {},
   };
 
   const isUserValid = await User.findById(userId);
@@ -173,7 +173,7 @@ const getAllVideos = asyncHandler(async (req, res) => {
 
   const sortOrder = sortType === "asc" ? 1 : -1;
   options.sort[sortBy] = sortOrder; // e.g. sort: { createedAt: -1 }
-  console.log(options)
+  console.log(options);
 
   const allUserVideosAggregate = Video.aggregate([
     {
@@ -192,7 +192,7 @@ const getAllVideos = asyncHandler(async (req, res) => {
         pipeline: [
           {
             $project: {
-              fullname: 1,
+              fullName: 1,
               username: 1,
               avatar: 1,
             },
@@ -206,8 +206,8 @@ const getAllVideos = asyncHandler(async (req, res) => {
       $unwind: "$ownerInfo",
     },
     {
-      $sort: options.sort // e.g. { createdAT: -1} will be assigned to $sort
-    }
+      $sort: options.sort, // e.g. { createdAT: -1} will be assigned to $sort
+    },
   ]);
 
   Video.aggregatePaginate(allUserVideosAggregate, options)
@@ -224,7 +224,94 @@ const getVideoById = asyncHandler(async (req, res) => {
    * search the document having that videoId from the Video Model
    * return URL of that video
    */
+  // console.log(req);
+  const { id: videoId } = req.params;
+
+  const isVideoIdValid = mongoose.Types.ObjectId.isValid(videoId);
+
+  if(!isVideoIdValid) {
+    throw new ApiError(404, "Invalid Video Id");
+  }
+  
+  const video = await Video.findById(videoId);
+
+  /** 
+   * remember: aggregate accepts & returns an array 
+   * 
+   * accept: [] of pipelines
+   * returns: [] of docs
+   * */
+  // const video = await Video.aggregate([
+  //   {
+  //     $match: {
+  //       _id: new mongoose.Types.ObjectId(videoId),
+  //     },
+  //   },
+  //   {
+  //     $project: {
+  //       owner: 1,
+  //       thumbnail: 1,
+  //       duration: 1,
+  //       title: 1,
+  //       views: 1,
+  //     },
+  //   },
+  //   {
+  //     $lookup: {
+  //       from: "users",
+  //       localField: "owner",
+  //       foreignField: "_id",
+  //       as: "owner",
+
+  //       // fetch only required fields
+  //       pipeline: [
+  //         {
+  //           $project: {
+  //             fullName: 1,
+  //             username: 1,
+  //             avatar: 1,
+  //           },
+  //         },
+  //       ],
+  //     },
+  //   },
+  //   {
+  //     $unwind: "$owner",
+  //   },
+  // ]);
+
+  // if (!video?.length) {
+  //   throw new ApiError(404, "Video does not exists");
+  // }
+
+  if(!video) {
+    throw new ApiError(404, "Video does not exists");
+  }
+  console.log("video object: ", video);
+
+  const ownerInfo = await User.findById(video.owner).select("-password -refreshToken");
+
+  if(!ownerInfo) {
+    throw new ApiError(404, "Owner of the video does not exists");
+  }
+
+  let videoInfo = { ...video._doc, owner: ownerInfo._doc};
+
+  // console.log(videoInfo);
+
+  /**
+   *  response for findBy method 
+   * */
+  return res
+    .status(200)
+    .json(new ApiResponse(200, videoInfo, "Video has been fetched successfully!"));
+
+  /** 
+   * response for Aggregate method 
+   * */
+  // return res.status(200).json(new ApiResponse(200, video[0], "Video has been fetched successfully!"));
 });
+
 const updateVideo = asyncHandler(async (req, res) => {
   /**
    * get info: videoId (compulsory), video, desc, title, etc where changes are required
