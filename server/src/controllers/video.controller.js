@@ -5,6 +5,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import { sanitizeInput } from "../utils/securityUtils.js";
 
 /**
  * publish a video
@@ -229,15 +230,15 @@ const getVideoById = asyncHandler(async (req, res) => {
 
   const isVideoIdValid = mongoose.Types.ObjectId.isValid(videoId);
 
-  if(!isVideoIdValid) {
+  if (!isVideoIdValid) {
     throw new ApiError(404, "Invalid Video Id");
   }
-  
+
   const video = await Video.findById(videoId);
 
-  /** 
-   * remember: aggregate accepts & returns an array 
-   * 
+  /**
+   * remember: aggregate accepts & returns an array
+   *
    * accept: [] of pipelines
    * returns: [] of docs
    * */
@@ -284,34 +285,73 @@ const getVideoById = asyncHandler(async (req, res) => {
   //   throw new ApiError(404, "Video does not exists");
   // }
 
-  if(!video) {
+  if (!video) {
     throw new ApiError(404, "Video does not exists");
   }
   console.log("video object: ", video);
 
-  const ownerInfo = await User.findById(video.owner).select("-password -refreshToken");
+  const ownerInfo = await User.findById(video.owner).select(
+    "-password -refreshToken"
+  );
 
-  if(!ownerInfo) {
+  if (!ownerInfo) {
     throw new ApiError(404, "Owner of the video does not exists");
   }
 
-  let videoInfo = { ...video._doc, owner: ownerInfo._doc};
+  let videoInfo = { ...video._doc, owner: ownerInfo._doc };
 
   // console.log(videoInfo);
 
   /**
-   *  response for findBy method 
+   *  response for findBy method
    * */
   return res
     .status(200)
-    .json(new ApiResponse(200, videoInfo, "Video has been fetched successfully!"));
+    .json(
+      new ApiResponse(200, videoInfo, "Video has been fetched successfully!")
+    );
 
-  /** 
-   * response for Aggregate method 
+  /**
+   * response for Aggregate method
    * */
   // return res.status(200).json(new ApiResponse(200, video[0], "Video has been fetched successfully!"));
 });
 
+/**
+ * Fetches a video by ID and checks if the given userId matches the video's owner.
+ *
+ * @param {string} videoId - The ID of the video to fetch.
+ * @param {string} userId - The ID of the user to authorize.
+ *
+ * @returns {boolean} - True if the user is authorized to modify the video, false otherwise.
+ * @throws {ApiError} - Throws an error if there's an issue fetching the video.
+ */
+const fetchAndAuthorizeVideo = async (videoId, userId) => {
+  const video = await Video.findById(videoId).catch((err) => {
+    throw new ApiError(500, `ERR :: Unable to fetch video: ${err.message}`);
+  });
+
+  if (!video || !userId || video.owner.toString() !== userId.toString()) {
+    return false;
+  }
+
+  return true;
+};
+
+/**
+ * Updates an existing video with new information.
+ *
+ * @param {Object} req - The Express request object.
+ * @param {Object} res - The Express response object.
+ *
+ * @returns {Promise<void>} - A Promise that resolves when the video is updated.
+ * @throws {ApiError} - Throws an error if there's an issue updating the video.
+ *
+ * **Extracts the following from the request:**
+ * - `videoId` from `req.params`
+ * - `title` and `desc` from `req.body`
+ * - `user` ID from `req.user._id`
+ */
 const updateVideo = asyncHandler(async (req, res) => {
   /**
    * get info: videoId (compulsory), video, desc, title, etc where changes are required
@@ -319,7 +359,119 @@ const updateVideo = asyncHandler(async (req, res) => {
    * return status and new URL of the video
    *
    */
+  /**
+   * videoId is from route path params,
+   * so we will definetly have videoId
+   */
+  const videoId = req.params.videoId;
+
+  /**
+   * User validation has already be done by verifyJWT middleware
+   */
+  const user = req.user._id;
+
+  /**
+   * Validate VideoId
+   */
+  if (!videoId || !isValidObjectId(videoId)) {
+    throw new ApiError(404, "ERR :: Invalid Video Id");
+  }
+
+  /**
+   * Authorization: checking whether the user is video owner or not
+   */
+  /**
+   * My first Approach
+   */
+  // const fetchedVideo = await Video.findById(videoId).catch((err) => {
+  //   throw new ApiError(
+  //     500,
+  //     `ERR :: Unable to fetch Video details :: ${err.message}`
+  //   );
+  // });
+  // console.log(fetchedVideo, "\n", user);
+
+  // if (fetchedVideo?.owner.toString() !== user?.toString()) {
+  //   throw new ApiError(
+  //     404,
+  //     "ERR :: Access denied: You do not have permission to edit this video."
+  //   );
+  // }
+
+  // no need of await here, as we are not returning any promise
+  // we are returning simple true or false
+  const isAuthorized = fetchAndAuthorizeVideo(videoId, user);
+
+  if (!isAuthorized) {
+    throw new ApiError(
+      400,
+      "ERR :: Access Denied: User is unauthorized to modify this video"
+    );
+  }
+
+  /**
+   * Extraction & Sanitization of title and description
+   */
+  const { title, desc } = req.body;
+  const sanitizedTitle = sanitizeInput(title).trim().slice(0, 70);
+  const sanitizedDesc = sanitizeInput(desc).trim().slice(0, 400);
+
+  const videoLocalPath = req.files?.videoFile?.[0]?.path;
+  const thumbnailLocalPath = req.files?.thumbnail?.[0]?.path;
+
+  /**
+   * Config Object to store fields and their new values for the update.
+   */
+  let updateVideoConfig = {};
+
+  if (videoLocalPath) {
+    const uploadedVideo = await uploadOnCloudinary(videoLocalPath);
+
+    if (!uploadedVideo) {
+      throw new ApiError(500, "ERR :: Unable to upload video");
+    }
+
+    updateVideoConfig.videoFile = uploadedVideo.secure_url;
+    updateVideoConfig.duration = uploadedVideo.duration;
+  }
+
+  if (thumbnailLocalPath) {
+    const uploadedThumbnail = await uploadOnCloudinary(thumbnailLocalPath);
+
+    if (!uploadedThumbnail) {
+      throw new ApiError(500, `ERR :: Unable to upload thumbnail`);
+    }
+    updateVideoConfig.thumbnail = uploadedThumbnail.secure_url;
+  }
+
+  if (sanitizedTitle) updateVideoConfig.title = sanitizedTitle;
+  if (sanitizedDesc) updateVideoConfig.description = sanitizedDesc;
+
+  // console.log(updateVideoConfig);
+
+  /**
+   * NOTE: findByIdAndUpdate() by default returns Old document
+   *
+   * thus to get UPDATED Document: use options -> {new: true}
+   */
+  const updatedVideo = await Video.findByIdAndUpdate(
+    videoId,
+    updateVideoConfig,
+    { new: true }
+  ).catch((err) => {
+    throw new ApiError(
+      500,
+      `ERR :: Unable to update video details :: ${err.message}`
+    );
+  });
+
+  // console.log("updated video: ", updatedVideo);
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, updatedVideo, "Video updated successfully!!"));
 });
+
 const deleteVideo = asyncHandler(async (req, res) => {
   /**
    * get info -> videoId
