@@ -29,7 +29,7 @@ router.route("/publish").post(
 
 router.route("/all-videos").get(verifyJWT, getAllVideos);
 
-router.route("/:id").get(verifyJWT, getVideoById);
+router.route("/:videoId").get(verifyJWT, getVideoById);
 
 router.route("/:videoId/update-video").patch(
   verifyJWT,

@@ -229,7 +229,7 @@ const getVideoById = asyncHandler(async (req, res) => {
    * return URL of that video
    */
   // console.log(req);
-  const { id: videoId } = req.params;
+  const { videoId } = req.params;
 
   const isVideoIdValid = mongoose.Types.ObjectId.isValid(videoId);
 
