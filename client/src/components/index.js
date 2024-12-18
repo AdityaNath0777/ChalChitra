@@ -3,5 +3,6 @@ import Login from "./Login";
 import Logout from "./Logout";
 import Profile from "./Profile";
 import Button from "./Button";
-
-export { Navbar, Login, Logout, Profile, Button };
+import Signin from "./Signin";
+import UpdateProfile from "./UpdateProfile";
+export { Navbar, Login, Signin, Logout, Profile, UpdateProfile, Button };

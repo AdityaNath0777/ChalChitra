@@ -6,6 +6,7 @@ export const UserContext = createContext({
   user: {
     _id: "",                  // string
     username: "",             // string
+    fullName: "",             // string
     email: "",                // string
     avatar: "",               // string (url)
     coverImage: "",           // string (url)
@@ -24,6 +25,7 @@ export const UserContext = createContext({
   // functionalities
   loginUser: async ({ email, password }) => {},
   logoutUser: async () => {},
+  registerUser: async({fullName, username, email, avatar, coverImage, password, confPassword}) => {},
   updateUser: async (newUser) => {},
 });
 

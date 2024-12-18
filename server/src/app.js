@@ -26,7 +26,7 @@ app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 // to allow cookies which only server can access
 // to perfom some CRUD Ops
 app.use(cookieParser());
-app.use(errorHandler)
+app.use(errorHandler);
 
 // after all the middlewares
 // we will use routes
@@ -34,11 +34,14 @@ app.use(errorHandler)
 // segregation of files by importing here
 // routes import
 import userRouter from "./routes/user.routes.js";
+import videoRouter from "./routes/video.routes.js";
 
 // routes declaration
 // app.get() -> routes and controller hard coded
 
 app.use("/api/v1/users", userRouter); // middleware to get router
+
+app.use("/api/v1/video", videoRouter); // middleware for video router
 
 // http://localhost:portNum/api/v1/users/register
 
