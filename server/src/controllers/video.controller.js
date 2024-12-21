@@ -4,7 +4,10 @@ import { Video } from "../models/video.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
-import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import {
+  deleteFromCloudinary,
+  uploadOnCloudinary,
+} from "../utils/cloudinary.js";
 import { sanitizeInput } from "../utils/securityUtils.js";
 
 /**
@@ -480,6 +483,58 @@ const deleteVideo = asyncHandler(async (req, res) => {
    *
    * return status
    */
+
+  const { videoId } = req.params;
+  const userId = req.user._id;
+
+  if (!videoId || !isValidObjectId(videoId)) {
+    throw new ApiError(404, "ERR :: Invalid video Id");
+  }
+
+  const isAuthorized = fetchAndAuthorizeVideo(videoId, userId);
+
+  if (!isAuthorized) {
+    throw new ApiError(
+      404,
+      "ERR :: Access Denied: User is unauthorized to modify this video"
+    );
+  }
+
+  /**
+   * Delete record from the Database
+   */
+  const delVideoDB = await Video.findByIdAndDelete(videoId);
+
+  if (!delVideoDB) {
+    throw new ApiError(404, "ERR :: Video does not exists");
+  }
+
+  /**
+   * Delete the video and thumbnail from cloud storage (cloudinary)
+   */
+  const delVideoCloud = await deleteFromCloudinary(
+    delVideoDB.videoFile,
+    "video"
+  );
+  const delThumbnailCloud = await deleteFromCloudinary(
+    delVideoDB.thumbnail,
+    "image"
+  );
+
+  if (delVideoCloud.result !== "ok") {
+    console.error(
+      `ERR :: Unable to delete Video form cloud : video link : ${delVideoDB.videoFile}`
+    );
+  }
+  if (delThumbnailCloud.result !== "ok") {
+    console.error(
+      `ERR :: Unable to delete Thumbnail form cloud : thumbnail link : ${delVideoDB.thumbnail}`
+    );
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, delVideoDB, "Video deleted successfully!"));
 });
 const togglePublishStatus = asyncHandler(async (req, res) => {
   /**
