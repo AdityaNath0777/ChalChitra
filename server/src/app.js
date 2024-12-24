@@ -36,6 +36,7 @@ app.use(errorHandler);
 import userRouter from "./routes/user.routes.js";
 import videoRouter from "./routes/video.routes.js";
 import subscriptionRouter from "./routes/subscription.routes.js";
+import commentRouter from "./routes/comment.routes.js";
 // routes declaration
 // app.get() -> routes and controller hard coded
 
@@ -43,7 +44,9 @@ app.use("/api/v1/users", userRouter); // middleware to get router
 
 app.use("/api/v1/video", videoRouter); // middleware for video router
 
-app.use("/api/v1/subscriptions", subscriptionRouter); // middle for subscription routes
+app.use("/api/v1/subscriptions", subscriptionRouter); // middleware for subscription routes
+
+app.use("/api/v1/comments", commentRouter); // middleware for comment routes
 // http://localhost:portNum/api/v1/users/register
 
 export { app };
