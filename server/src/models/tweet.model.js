@@ -9,6 +9,16 @@ const tweetSchema = new Schema(
     owner: {
       type: Schema.Types.ObjectId,
       ref: "User",
+      required: true,
+    },
+    replies: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Reply",
+      },
+    ],
+    isEdited: {
+      type: Boolean,
     },
   },
   {

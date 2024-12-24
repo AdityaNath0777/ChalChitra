@@ -2,21 +2,20 @@ import mongoose, { Schema } from "mongoose";
 
 const likeSchema = new Schema(
   {
-    video: {
-      type: Schema.Types.ObjectId,
-      ref: "Video",
-    },
-    comment: {
-      type: Schema.Types.ObjectId,
-      ref: "Comment",
-    },
-    tweet: {
-      type: Schema.Types.ObjectIs,
-      ref: "Tweet",
-    },
     likedBy: {
-      type: Schema.Types.ObjectIs,
+      type: Schema.Types.ObjectId,
       ref: "User",
+      required: true,
+    },
+    likeable: {
+      type: Schema.Types.ObjectId,
+      ref: "likeableType",
+      required: true,
+    },
+    likeableType: {
+      type: Schema.Types.ObjectId,
+      enum: ["Video", "Comment", "Tweet", "Reply"],
+      required: true,
     },
   },
   {
