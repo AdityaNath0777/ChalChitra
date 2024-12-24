@@ -229,7 +229,7 @@ const getVideoById = asyncHandler(async (req, res) => {
    * return URL of that video
    */
   // console.log(req);
-  const { id: videoId } = req.params;
+  const { videoId } = req.params;
 
   const isVideoIdValid = mongoose.Types.ObjectId.isValid(videoId);
 
@@ -536,6 +536,7 @@ const deleteVideo = asyncHandler(async (req, res) => {
     .status(200)
     .json(new ApiResponse(200, delVideoDB, "Video deleted successfully!"));
 });
+
 const togglePublishStatus = asyncHandler(async (req, res) => {
   /**
    * get videoId
@@ -546,6 +547,44 @@ const togglePublishStatus = asyncHandler(async (req, res) => {
    * save it to MongoDB
    * and return status
    */
+
+  const { videoId } = req.params;
+  const userId = req.user._id;
+
+  if (!videoId || !isValidObjectId(videoId)) {
+    throw new ApiError(404, "ERR :: Invalid video Id");
+  }
+
+  const isAuthorized = fetchAndAuthorizeVideo(videoId, userId);
+
+  if (!isAuthorized) {
+    throw new ApiError(
+      404,
+      "ERR :: Access Denied: User is unauthorized to modify this video"
+    );
+  }
+
+  const video = await Video.findById(videoId);
+
+  if (!video) {
+    throw new ApiError(404, "ERR :: Video does not exists");
+  }
+
+  video.isPublished = !video.isPublished;
+
+  await video.save().catch((err) => {
+    throw new ApiError(500, `ERR :: Unable to toggle Publish Status :: ${err.message}`);
+  });
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        video,
+        "Video's publish status has been toggled successfully"
+      )
+    );
 });
 
 export {
