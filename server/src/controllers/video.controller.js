@@ -159,11 +159,17 @@ const getAllVideos = asyncHandler(async (req, res) => {
    * return
    */
 
-  const { page, limit, sortBy, sortType, userId } = req.query;
+  const {
+    page = 1,
+    limit = 10,
+    sortBy = "createdAt",
+    sortType = "asc",
+    userId,
+  } = req.query;
 
   const options = {
-    page: page,
-    limit: limit,
+    page,
+    limit,
     sort: {},
   };
 
@@ -573,7 +579,10 @@ const togglePublishStatus = asyncHandler(async (req, res) => {
   video.isPublished = !video.isPublished;
 
   await video.save().catch((err) => {
-    throw new ApiError(500, `ERR :: Unable to toggle Publish Status :: ${err.message}`);
+    throw new ApiError(
+      500,
+      `ERR :: Unable to toggle Publish Status :: ${err.message}`
+    );
   });
 
   return res
