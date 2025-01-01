@@ -259,7 +259,7 @@ const logoutUser = asyncHandler(async (req, res) => {
       // now response will have updated value
       new: true,
     }
-  );
+  ).select("-password");
 
   const options = {
     httpOnly: true,
@@ -270,7 +270,7 @@ const logoutUser = asyncHandler(async (req, res) => {
     .status(200)
     .clearCookie("accessToken", options)
     .clearCookie("refreshToken", options)
-    .json(new ApiResponse(200, user, "User Logged Out Successfully !!"));
+    .json(new ApiResponse(200, user, "User Logged Out Successfully!!"));
 });
 
 // controller for endpoint for the refresh Access Token
