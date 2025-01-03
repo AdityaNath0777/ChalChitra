@@ -1,6 +1,7 @@
 import { createContext, useContext } from "react";
 import { User } from "../types/user";
 import { Error } from "../types/error";
+import { RegisterInfo } from "../types/auth.types";
 
 interface LoginProps {
   email: string;
@@ -8,20 +9,11 @@ interface LoginProps {
   rememberMe? : boolean | null;
 }
 
-interface RegisterUserProps {
-  fullName: string;
-  username: string;
-  email: string;
-  avatar: string;
-  coverImage: string;
-  password: string;
-  confPassword: string;
-}
-
 interface UserContextType {
   user: User | null;
   error: Error | null;
   isLoading: boolean;
+  isLoggedIn: boolean;
   loginUser: ({ email, password }: LoginProps) => void;
   logoutUser: () => void;
 
@@ -32,7 +24,7 @@ interface UserContextType {
     avatar,
     coverImage,
     password,
-  }: RegisterUserProps) => void;
+  }: RegisterInfo) => void;
 
   updateUser: (userData: User) => void;
 }
@@ -40,6 +32,7 @@ interface UserContextType {
 export const UserContext = createContext<UserContextType>({
   // user
   user: null,
+  isLoggedIn: false,
 
   // error
   error: null,
