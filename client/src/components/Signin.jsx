@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { useUser } from "../contexts";
 import { Button } from "./index";
+import { Navigate } from "react-router-dom";
 
 const Signin = () => {
-  const { registerUser, error } = useUser();
+  const { registerUser, error, isLoggedIn } = useUser();
   const [formData, setFormData] = useState({
     fullName: "",
     username: "",
@@ -73,7 +74,7 @@ const Signin = () => {
     // inject files into the object
     // call register logic
     if (validate()) {
-      registerUser(formData)
+      registerUser(formData);
       alert("validation complete!, everything is alright");
     }
 
@@ -105,8 +106,8 @@ const Signin = () => {
 
     setFormData((prev) => ({
       ...prev,
-      [name] : files[0]
-    }))
+      [name]: files[0],
+    }));
   };
 
   // useEffect(() => {
@@ -123,7 +124,9 @@ const Signin = () => {
   //   setCoverImage(e.target.files[0])
   //   console.log(e.target.files[0]);
   // }
-  return (
+  return isLoggedIn ? (
+    <Navigate to={"/profile"} />
+  ) : (
     <div className="w-full mx-auto my-4">
       <form
         method="POST"
@@ -137,7 +140,7 @@ const Signin = () => {
             name="avatar"
             accept="image/*"
             className="mx-auto"
-            style={{width: "120px"}}
+            style={{ width: "120px" }}
             onChange={handlePreviewImg}
           />
           <img
@@ -152,7 +155,7 @@ const Signin = () => {
             name="coverImage"
             accept="image/*"
             className="mx-auto"
-            style={{width: "120px"}}
+            style={{ width: "120px" }}
             onChange={handlePreviewImg}
           />
           <img
