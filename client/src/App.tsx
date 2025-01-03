@@ -8,7 +8,7 @@ import {
   Profile,
   Signin,
   UpdateProfile,
-} from "./components/index";
+} from "./components";
 import useUserHook from "./hooks/useUserHook";
 
 function App() {
@@ -26,8 +26,6 @@ function App() {
     setIsUpdating,
   } = useUserHook();
 
-  console.log(setIsRegistered);
-  console.log(setIsUpdating);
   return (
     <UserProvider
       value={{ user, error, registerUser, loginUser, logoutUser, updateUser }}

@@ -3,6 +3,7 @@
 - My [Model Link]()
 <!-- will add it soon, when I create the visualization of it-->
 
+
 ### Project Overview
 
 This project originated from the **"Chai aur Backend"** course by Hitesh Choudhary (YouTube). While the course focused on teaching the foundational backend development for the MERN stack (covering only User API endpoints), I extended the project significantly by:  
@@ -58,6 +59,10 @@ Follow these steps to set up and run the frontend server:
    ```bash
    npm run dev
    ```
+
+---
+
+- My Backend Tutorial repo [link](https://github.com/AdityaNath0777/JS_Backend) of the original course of **"Chai aur Backend"**
 
 ---
 
