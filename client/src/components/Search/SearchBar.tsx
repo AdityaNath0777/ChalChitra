@@ -12,7 +12,7 @@ const SearchBar = () => {
         type="text"
         value={searchText}
         onChange={(e) => setSearchText(e.target.value)}
-        className="grow text-slate-300 px-4 py-2 bg-slate-900 outline-none rounded-l-full border-2 border-slate-400 active:border-slate-200"
+        className="grow text-slate-300 px-4 py-2 bg-slate-900 outline-none rounded-l-full border-2 border-slate-400 focus:border-slate-200"
       />
       <button
         type="submit"
