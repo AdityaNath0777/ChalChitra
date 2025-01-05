@@ -1,8 +1,8 @@
 const VoiceSearch = () => {
   return (
-    <div className="p-2 rounded-full bg-slate-200">
-      🎤
-    </div>
+    <button className="p-2 rounded-full bg-slate-400 w-10 h-10">
+      <i className="text-gray-100 fa-solid fa-microphone"></i>
+    </button>
   )
 }
 

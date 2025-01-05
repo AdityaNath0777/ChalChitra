@@ -18,7 +18,7 @@ const SearchBar = () => {
         type="submit"
         className="rounded-r-full pl-4 pr-6 py-2 bg-slate-400 text-center"
       >
-        <i className="">🔍</i>
+        <i className="text-lg fa-solid fa-magnifying-glass"></i>
       </button>
     </form>
   );
