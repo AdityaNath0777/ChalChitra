@@ -17,6 +17,7 @@ import {
 } from "./components";
 import useUserHook from "./hooks/useUserHook";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Header from "./components/Header";
 
 function App() {
   const {
@@ -45,12 +46,13 @@ function App() {
         updateUser,
       }}
     >
-      <div className="my-container grid grid-cols-6 relative">
-        <div className="col-span-1 relative">
-          <Navbar />
-        </div>
-        <div className="col-span-5">
-          <Router>
+      <Router>
+        <Header />
+        <div className="my-container grid grid-cols-6 relative">
+          <div className="col-span-1 relative">
+            <Navbar />
+          </div>
+          <div className="col-span-5">
             <Routes>
               <Route path="/" element={<Navigate to={"/home"} replace />} />
               <Route path="/home" element={<div>Home</div>} />
@@ -70,9 +72,9 @@ function App() {
               </Route>
               <Route path="*" element={<>Page Not Found...</>} />
             </Routes>
-          </Router>
+          </div>
         </div>
-      </div>
+      </Router>
 
       {/* {!isRegistered && (
         <div className="w-full mx-auto mt-10">
