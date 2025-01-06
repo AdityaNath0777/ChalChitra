@@ -1,5 +1,5 @@
 import React from "react";
-import { Logout } from "./index";
+import { Logout, UpdateProfile } from "./index";
 import { useUser } from "../contexts";
 
 const Profile = () => {
@@ -38,6 +38,7 @@ const Profile = () => {
           </div>
         </div>
         <Logout />
+        <UpdateProfile />
       </div>
     </div>
   );

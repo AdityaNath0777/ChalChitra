@@ -75,13 +75,26 @@ const UpdateProfile = () => {
     <div className="w-full mx-auto my-4">
       <h1 className="text-4xl text-center main-font">Update Profile</h1>
       <form onSubmit={handleSubmit} className="flex flex-col w-3/5 mx-auto ">
-        <input
-          className="px-2 py-1 text-slate-900 font-semibold"
-          type="text"
-          name="fullName"
-          value={formData.fullName}
-          onChange={handleInputChange}
-        />
+        <label className="flex gap-3 w-full">
+          <div className="min-w-20">Full Name</div>
+          <input
+            className="px-2 py-1 text-slate-900 font-semibold"
+            type="text"
+            name="fullName"
+            value={formData.fullName}
+            onChange={handleInputChange}
+          />
+        </label>
+        <label className="flex gap-3 w-full">
+          <div className="min-w-20">email</div>
+          <input
+            className="px-2 py-1 text-slate-900 font-semibold"
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleInputChange}
+          />
+        </label>
         <Button>Update Changes</Button>
       </form>
     </div>
