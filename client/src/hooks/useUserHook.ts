@@ -3,8 +3,19 @@ import authService from "../services/auth.service";
 import { LoginInfo, RegisterInfo, UpdateUserInfo } from "../types/auth.types";
 
 const useUserHook = () => {
-  const [user, setUser] = useState({});
-  const [error, setError] = useState({});
+  const [user, setUser] = useState({
+    _id: "",
+    username: "",
+    fullName: "",
+    email: "",
+    avatar: "",
+    coverImage: "",
+    watchHistory: [""],
+    createdAt: "",
+    updatedAt: "",
+  });
+
+  const [error, setError] = useState({ status: 400, message: "" });
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isRegistered, setIsRegistered] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
@@ -15,7 +26,7 @@ const useUserHook = () => {
     setIsLoggedIn(true);
     setError({
       message: "",
-      status: "",
+      status: 0,
     });
   };
 
@@ -58,7 +69,7 @@ const useUserHook = () => {
   const updateUser = async (userInfo: UpdateUserInfo) => {
     console.log("before: ", userInfo);
     const updatedUser = await authService.updateUser(userInfo);
-    setUser(updatedUser);
+    setUser(prev => ({...prev, ...updatedUser}));
     setIsUpdating(false);
   };
 
@@ -75,7 +86,7 @@ const useUserHook = () => {
       }
       setError({
         message: "",
-        status: "",
+        status: 0,
       });
     };
 
