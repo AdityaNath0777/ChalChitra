@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import Button from "./Button";
+import { Navigate } from "react-router-dom";
 import { useUser } from "../contexts";
 
 const Login = () => {
-  const { loginUser, error } = useUser();
+  const { loginUser, error, isLoggedIn } = useUser();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-  }); 
+  });
 
   const [errors, setErrors] = useState({
     email: "",
@@ -49,7 +50,9 @@ const Login = () => {
       loginUser(formData);
     }
   };
-  return (
+  return isLoggedIn ? (
+    <Navigate to={"/profile"} replace />
+  ) : (
     <div className="w-full mx-auto my-4">
       <form
         method="POST"

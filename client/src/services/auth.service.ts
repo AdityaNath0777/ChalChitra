@@ -55,7 +55,7 @@ const authService = {
 
   async updateUser(userInfo: UpdateUserInfo) {
     try {
-      const url = `${BASE_URL}/users/update-account`;
+      const url = `${BASE_URL}/update-account`;
       const config = {
         headers: { "Content-Type": "application/json" },
         withCredentials: true,
