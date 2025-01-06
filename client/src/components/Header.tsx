@@ -7,7 +7,7 @@ const Header = () => {
   const { user, isLoggedIn } = useUser();
   const [showSideBar, setShowSideBar] = useState(true);
   const navigate = useNavigate();
-  
+
   const handleSigninClick = () => {
     navigate("/signin");
   };
@@ -45,20 +45,25 @@ const Header = () => {
       >
         {isLoggedIn ? (
           <>
-            <div className="create-video-icon cursor-pointer text-center p-2 pr-4 rounded-full bg-slate-400">
-              ➕ Create
+            <div className="create-video-icon cursor-pointer text-center p-2 pl-3 pr-3 rounded-full bg-slate-400">
+              <i className="fa-regular fa-plus mr-1"></i>
+              <span>Create</span>
             </div>
-            <div className="notification-icon cursor-pointer px-2 pt-1 pb-3 rounded-full bg-slate-400">
-              🔔
+            <div className="notification-icon text-center cursor-pointer p-2 w-10 rounded-full bg-slate-400">
+              <i className="fa-regular fa-bell"></i>
             </div>
             <div className="profile-icon cursor-pointer ">
-              <img
-                src={user?.avatar}
-                alt={`${user?.fullName}'s profile icon`}
-                width={"40px"}
-                height={"40px"}
-                className="rounded-full object-contain"
-              />
+              {user?.avatar ? (
+                <img
+                  src={user.avatar}
+                  alt={`${user.fullName}'s profile icon`}
+                  width={"40px"}
+                  height={"40px"}
+                  className="rounded-full object-contain"
+                />
+              ) : (
+                <i className="text-lg fa-solid fa-user mx-2"></i>
+              )}
             </div>
           </>
         ) : (
