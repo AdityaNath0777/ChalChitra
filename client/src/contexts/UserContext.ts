@@ -6,7 +6,7 @@ import { RegisterInfo } from "../types/auth.types";
 interface LoginProps {
   email: string;
   password: string;
-  rememberMe? : boolean | null;
+  rememberMe?: boolean | null;
 }
 
 interface UserContextType {
@@ -49,7 +49,15 @@ export const UserContext = createContext<UserContextType>({
 // custom hook
 export const useUser = () => {
   // return another Hook to make aware about context
-  return useContext(UserContext);
+  // return useContext(UserContext);
+
+  const context = useContext(UserContext);
+
+  if (!context) {
+    console.error("useUser must be within a UserProvider");
+  }
+
+  return context;
 };
 
 export const UserProvider = UserContext.Provider;
