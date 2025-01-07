@@ -21,8 +21,10 @@ const authService = {
 
       return response.data.data;
     } catch (error) {
-      if (error instanceof Error)
+      if (error instanceof Error) {
         console.error("Error logging in:", error.message);
+        return error;
+      }
     }
   },
 

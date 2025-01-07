@@ -1,6 +1,6 @@
 import { createContext, useContext } from "react";
 import { User } from "../types/user";
-import { Error } from "../types/error";
+import { MyError } from "../types/error";
 import { RegisterInfo } from "../types/auth.types";
 
 interface LoginProps {
@@ -11,7 +11,7 @@ interface LoginProps {
 
 interface UserContextType {
   user: User | null;
-  error: Error | null;
+  error: MyError | null;
   isLoading: boolean;
   isLoggedIn: boolean;
   loginUser: ({ email, password }: LoginProps) => void;

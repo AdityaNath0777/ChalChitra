@@ -1,11 +1,10 @@
-import React from "react";
 import { Logout, UpdateProfile } from "./index";
 import { useUser } from "../contexts";
 
 const Profile = () => {
   const { user } = useUser();
 
-  return (
+  return user ? (
     <div className="flex">
       <div className="grow text-center">
         <div className=" w-4/5 max-h-40 mx-auto">
@@ -26,6 +25,7 @@ const Profile = () => {
               src={user.avatar}
               style={{ borderRadius: "50%" }}
               alt="user avatar"
+              className="aspect-square "
             />
           </div>
           <div className="my-4 col-span-5 text-left">
@@ -41,6 +41,8 @@ const Profile = () => {
         <UpdateProfile />
       </div>
     </div>
+  ) : (
+    <></>
   );
 };
 

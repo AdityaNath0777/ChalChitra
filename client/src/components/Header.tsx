@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useUser } from "../contexts";
 import SearchForm from "./Search/SearchForm";
 import { useNavigate } from "react-router-dom";
+import { Button } from "./";
 
 const Header = () => {
   const { user, isLoggedIn } = useUser();
@@ -67,13 +68,15 @@ const Header = () => {
             </div>
           </>
         ) : (
-          <button
-            onClick={handleSigninClick}
-            className="bg-slate-400/20 backdrop:filter  drop-shadow-md rounded-full px-4 py-2"
-          >
-            <i className="text-lg fa-solid fa-user mx-2"></i>
-            <span className="text-lg mr-2">Sign in</span>
-          </button>
+          <div>
+            <Button
+              className="bg-slate-400/20 backdrop:filter drop-shadow-md rounded-full px-4 py-2"
+              onClick={handleSigninClick}
+            >
+              <i className="text-lg fa-solid fa-user mx-2"></i>
+              <span className="text-lg mr-2">Sign in</span>
+            </Button>
+          </div>
         )}
       </div>
     </div>

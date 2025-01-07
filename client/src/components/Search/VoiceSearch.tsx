@@ -1,9 +1,15 @@
+import { Button } from "..";
+
 const VoiceSearch = () => {
   return (
-    <button className="p-2 rounded-full bg-slate-400 w-10 h-10">
+    <Button
+      className={"p-2 rounded-full bg-slate-400  w-10 h-10"}
+      type={"button"}
+      aria-label={"Voice Search"}
+    >
       <i className="text-gray-100 fa-solid fa-microphone"></i>
-    </button>
-  )
-}
+    </Button>
+  );
+};
 
-export default VoiceSearch
+export default VoiceSearch;
