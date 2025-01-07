@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "./Button";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useUser } from "../contexts";
 
 const Login = () => {
+  const navigate = useNavigate();
   const { loginUser, error, isLoggedIn } = useUser();
   const [formData, setFormData] = useState({
     email: "",
@@ -15,7 +16,7 @@ const Login = () => {
     password: "",
   });
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
     setFormData((prevData) => ({
@@ -43,16 +44,29 @@ const Login = () => {
     return Object.values(newErrors).every((err) => err === false);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (validate()) {
       loginUser(formData);
     }
   };
-  return isLoggedIn ? (
-    <Navigate to={"/profile"} replace />
-  ) : (
+
+  // if used w/o useEffect as a side-effect
+  // Warning: Cannot update a component (`BrowserRouter`) 
+  // while rendering a different component (`Login`). 
+  // Due to the bad setState() call inside `Login`
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate("/profile");
+    }
+
+    // navigate is also in dependency array
+    // bcz => The useNavigate hook returns a new function on each render.
+    // i.e. we'll have a new reference for each render
+  }, [isLoggedIn, navigate]);
+
+  return (
     <div className="w-full mx-auto my-4">
       <form
         method="POST"
@@ -70,12 +84,14 @@ const Login = () => {
           }`}
           onChange={handleInputChange}
         />
-        {errors?.email && (
+        {errors?.email ? (
           <p
             className={`bg-red-600 rounded text-slate-200 border-2 border-slate-200 w-full text-sm text-center px-3 py-2`}
           >
             {errors?.email}
           </p>
+        ) : (
+          <></>
         )}
         <input
           type="password"
@@ -87,25 +103,40 @@ const Login = () => {
           }`}
           onChange={handleInputChange}
         />
-        {errors?.password && (
+        {errors?.password ? (
           <p className="bg-red-600 rounded text-slate-200 border-2 border-slate-200 w-full text-sm text-center px-3 py-2">
             {errors?.password}
           </p>
+        ) : (
+          <></>
         )}
         <Button
-          className={"bg-green-500 w-full px-4 text-xl rounded py-2"}
+          className={
+            "bg-green-500 w-full px-4 text-xl text-gray-50 font-medium rounded py-2"
+          }
           textSize={"1.2rem"}
           type={"submit"}
         >
           Login
         </Button>
       </form>
-      {(error.message || error.status) && (
+      {error?.message || error?.status ? (
         <p className="text-center font-bold text-2xl main-font  bg-red-500 border-2 rounded px-3 py-2 mt-10">
           Login Failed!! <br />
           <span className="text-6xl">☠️</span>
         </p>
+      ) : (
+        <></>
       )}
+      <div className="go-to-signin my-4">
+        Don't have an account?{" "}
+        <span
+          className="underline italic cursor-pointer"
+          onClick={() => navigate("/signin")}
+        >
+          Sign up Here
+        </span>
+      </div>
     </div>
   );
 };
