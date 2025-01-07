@@ -1,45 +1,52 @@
 import { useEffect, useState } from "react";
 import authService from "../services/auth.service";
 import { LoginInfo, RegisterInfo, UpdateUserInfo } from "../types/auth.types";
+import { User } from "../types/user";
+import { MyError } from "../types/error";
 
 const useUserHook = () => {
-  const [user, setUser] = useState({
-    _id: "",
-    username: "",
-    fullName: "",
-    email: "",
-    avatar: "",
-    coverImage: "",
-    watchHistory: [""],
-    createdAt: "",
-    updatedAt: "",
-  });
+  const [user, setUser] = useState<User | null>(null);
 
-  const [error, setError] = useState({ status: 400, message: "" });
+  const [error, setError] = useState<MyError | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isRegistered, setIsRegistered] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
 
   const loginUser = async (loginInfo: LoginInfo) => {
-    const { user: newUser } = await authService.login(loginInfo);
-    setUser(newUser);
-    setIsLoggedIn(true);
-    setError({
-      message: "",
-      status: 0,
-    });
+    try {
+      const { user: newUser } = await authService.login(loginInfo);
+      setUser(newUser);
+      setIsLoggedIn(true);
+      setError({
+        message: "",
+        status: 0,
+      });
+    } catch (error) {
+      if(error instanceof Error) {
+          setError({ 
+            status: 500, 
+            message: error.message 
+          });
+      }
+    }
   };
 
   const logoutUser = async () => {
-    const isLoggedOut = await authService.logout();
-
-    if (isLoggedOut) {
-      setUser({});
-      setIsLoggedIn(false);
-      setError({
-        message: "",
-        status: null,
-      });
+    try {
+      const isLoggedOut = await authService.logout();
+  
+      if (isLoggedOut) {
+        setUser(null);
+        setIsLoggedIn(false);
+        setError(null);
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        setError({
+          message: error.message,
+          status: 500,
+        });
+      }     
     }
 
     // try {
@@ -84,10 +91,7 @@ const useUserHook = () => {
         setIsLoggedIn(true);
         setIsRegistered(true);
       }
-      setError({
-        message: "",
-        status: 0,
-      });
+      setError(null);
     };
 
     checkLoggedInUser();
