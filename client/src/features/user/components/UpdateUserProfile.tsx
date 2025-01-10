@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useUser } from "@shared/hooks";
 import { Button } from "@shared/components";
 import { Validator } from "@shared/utils/validateInput";
-import { FormErrors } from "../../../types/error";
+import { FormErrors } from "@shared/types/error.types";
 
 const UpdateUserProfile = () => {
   console.log("update profile component")
