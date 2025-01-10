@@ -9,12 +9,19 @@ export default defineConfig(({ mode }) => {
     server: {
       proxy: {
         "/api": {
-          target:   proxy_target,
+          target: proxy_target,
           changeOrigin: true,
           secure: false,
         },
       },
     },
     plugins: [react()],
+    resolve: {
+      alias: {
+        "@features": "/src/features",
+        "@shared": "/src/shared",
+        "@config": "/src/config",
+      },
+    },
   };
 });

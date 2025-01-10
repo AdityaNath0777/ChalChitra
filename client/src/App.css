@@ -4,3 +4,16 @@
   font-family: "Lugrasimo", cursive;
   font-style: normal;
 }
+
+.no-scrollbar {
+  /* for webkit based browsers */
+  -webkit-overflow-scrolling: touch;
+  overflow-x: hidden;
+  
+  /* For Chrome, Firefox, Brave */
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
