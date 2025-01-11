@@ -191,14 +191,18 @@ const loginUser = asyncHandler(async (req, res) => {
     "-password -refreshToken"
   );
 
+  console.log(process.env.NODE_ENV)
+  console.log(process.env.NODE_ENV === "PRODUCTION")
   // options for COOKIES
   const options = {
     // now cookie is only modifiable by the SERVER
-    htmlOnly: true,
-    secure: true,
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "PRODUCTION" ? true : false,
 
     // frontend can only read it (write operation not available to them)
   };
+
+  console.log(options)
 
   return res
     .status(200)
@@ -263,7 +267,7 @@ const logoutUser = asyncHandler(async (req, res) => {
 
   const options = {
     httpOnly: true,
-    secure: true,
+    secure: process.env.NODE_ENV === "PRODUCTION" ? true : false,
   };
 
   return res
