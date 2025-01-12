@@ -164,7 +164,7 @@ const getAllVideos = asyncHandler(async (req, res) => {
     limit = 10,
     sortBy = "createdAt",
     sortType = "asc",
-    userId,
+    userId = req.user._id,
   } = req.query;
 
   const options = {
@@ -175,11 +175,13 @@ const getAllVideos = asyncHandler(async (req, res) => {
 
   const isUserValid = await User.findById(userId);
 
+  // console.log("userId: ", userId);
+
   if (!isUserValid) {
     throw new ApiError(400, "Invalid UserId :: This User does not exists");
   }
 
-  console.log("User exists");
+  // console.log("User exists");
 
   const sortOrder = sortType === "asc" ? 1 : -1;
   options.sort[sortBy] = sortOrder; // e.g. sort: { createedAt: -1 }
@@ -196,7 +198,7 @@ const getAllVideos = asyncHandler(async (req, res) => {
         from: "users",
         localField: "owner",
         foreignField: "_id",
-        as: "ownerInfo", // it will be stored as array
+        as: "owner", // it will be stored as array
 
         // to fetch only required fields
         pipeline: [
@@ -213,7 +215,7 @@ const getAllVideos = asyncHandler(async (req, res) => {
     {
       // to convert the owenerInfo[] into separate objects
       // by creating a new document for each object inside the array
-      $unwind: "$ownerInfo",
+      $unwind: "$owner",
     },
     {
       $sort: options.sort, // e.g. { createdAT: -1} will be assigned to $sort
@@ -222,7 +224,7 @@ const getAllVideos = asyncHandler(async (req, res) => {
 
   Video.aggregatePaginate(allUserVideosAggregate, options)
     .then((result) => {
-      console.log("result: ", result);
+      // console.log("result: ", result);
       return res.status(200).json(new ApiResponse(200, result, "User Exists"));
     })
     .catch((error) => console.log(error.message));
@@ -297,7 +299,7 @@ const getVideoById = asyncHandler(async (req, res) => {
   if (!video) {
     throw new ApiError(404, "Video does not exists");
   }
-  console.log("video object: ", video);
+  // console.log("video object: ", video);
 
   const ownerInfo = await User.findById(video.owner).select(
     "-password -refreshToken"
@@ -358,7 +360,7 @@ const fetchAndAuthorizeVideo = async (videoId, userId) => {
  *
  * **Extracts the following from the request:**
  * - `videoId` from `req.params`
- * - `title` and `desc` from `req.body`
+ * - `title` and `description` from `req.body`
  * - `user` ID from `req.user._id`
  */
 const updateVideo = asyncHandler(async (req, res) => {
@@ -421,9 +423,9 @@ const updateVideo = asyncHandler(async (req, res) => {
   /**
    * Extraction & Sanitization of title and description
    */
-  const { title, desc } = req.body;
+  const { title, description } = req.body;
   const sanitizedTitle = sanitizeInput(title).trim().slice(0, 70);
-  const sanitizedDesc = sanitizeInput(desc).trim().slice(0, 400);
+  const sanitizedDesc = sanitizeInput(description).trim().slice(0, 400);
 
   const videoLocalPath = req.files?.videoFile?.[0]?.path;
   const thumbnailLocalPath = req.files?.thumbnail?.[0]?.path;
