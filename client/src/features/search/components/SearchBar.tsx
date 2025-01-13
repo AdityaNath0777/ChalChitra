@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
-import { Button } from "@shared/components";
 import { debounce } from "@shared/utils/debounce";
+import SearchButton from "./SearchButton";
 
 const SearchBar = () => {
   const [query, setQuery] = useState("");
@@ -37,15 +37,10 @@ const SearchBar = () => {
         onChange={handleQueryChange}
         placeholder="Search..."
         aria-placeholder="Search"
-        className="grow text-slate-300 px-4 py-2 bg-slate-900 outline-none rounded-l-full border-2 border-slate-400 focus:border-slate-200"
+        className="grow text-slate-300 px-2 sm:px-3 lg:px-4 py-1 lg:py-2 text-sm bg-slate-900 outline-none rounded-l-full border-2 border-slate-400 focus:border-slate-200"
       />
       <div>
-        <Button
-          type="submit"
-          className={"rounded-r-full pl-4 pr-6 py-2 bg-slate-400 text-center"}
-        >
-          <i className="text-lg fa-solid fa-magnifying-glass"></i>
-        </Button>
+        <SearchButton type="submit" />
       </div>
     </form>
   );
