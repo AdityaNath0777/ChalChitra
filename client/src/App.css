@@ -1,6 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Lugrasimo&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Lugrasimo&display=swap");
 
-.main-font{
+.main-font {
   font-family: "Lugrasimo", cursive;
   font-style: normal;
 }
@@ -9,11 +9,25 @@
   /* for webkit based browsers */
   -webkit-overflow-scrolling: touch;
   overflow-x: hidden;
-  
+
   /* For Chrome, Firefox, Brave */
   scrollbar-width: none;
 }
 
 .no-scrollbar::-webkit-scrollbar {
   display: none;
+}
+
+@media (min-width: 2040px) {
+  .xxl\:text-base {
+    font-size: 1.5rem;
+    line-height: 2.25rem;
+  }
+  .xxl\:text-sm {
+    font-size: 1.25rem;
+    line-height: 2rem;
+  }
+  .xxl\:max-w-20 {
+    max-width: 5rem /* 80px */;
+  }
 }
