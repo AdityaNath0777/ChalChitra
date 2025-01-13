@@ -1,12 +1,14 @@
 import React from "react";
 
-type ButtonProps = {
+interface ButtonProps
+  extends React.HTMLAttributes<HTMLButtonElement>,
+    React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
   className?: string;
   textSize?: string;
   type?: "button" | "submit" | "reset";
   onClick?: () => void;
-};
+}
 
 const Button: React.FC<ButtonProps> = ({
   children,
