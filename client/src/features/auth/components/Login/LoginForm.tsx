@@ -60,7 +60,7 @@ const LoginForm = () => {
   useEffect(() => {
     console.log("my useEffect")
     if (isLoggedIn) {
-      navigate("/profile");
+      navigate("/");
       console.log("logged in hai bhai")
 
     }
