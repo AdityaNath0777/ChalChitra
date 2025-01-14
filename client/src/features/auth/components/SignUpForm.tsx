@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "@shared/hooks";
 import { Button } from "@shared/components";
 import { useNavigate } from "react-router-dom";
-import { FormErrors } from "../../../types/error";
+import { FormErrors } from "@shared/types/error.types";
 import { Validator } from "@shared/utils/validateInput";
 
 interface FieldInfo {
