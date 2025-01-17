@@ -5,6 +5,9 @@ import { Subscription } from "../models/subscription.model.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { User } from "../models/user.model.js";
 
+/**
+ * to fetch the channels subscribed by the current channel
+ */
 const getSubscribedChannels = asyncHandler(async (req, res) => {
   const { channelId } = req.params;
 
@@ -58,6 +61,9 @@ const getSubscribedChannels = asyncHandler(async (req, res) => {
     );
 });
 
+/**
+ * to subscriber or unsubscribe the subscription
+ */
 const toggleSubscription = asyncHandler(async (req, res) => {
   const { channelId } = req.params;
   const userId = new Types.ObjectId(req.user._id);
@@ -92,6 +98,9 @@ const toggleSubscription = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, `Channel ${result} Successfully!`));
 });
 
+/**
+ * to fetch the channels which have subscribed to the current user
+ */
 const getUserChannelSubscribers = asyncHandler(async (req, res) => {
   const userId = req.user._id;
 
@@ -119,6 +128,9 @@ const getUserChannelSubscribers = asyncHandler(async (req, res) => {
         ],
       },
     },
+    {
+      $unwind: "$subscriber"
+    }
   ]).catch((err) => {
     console.error(`ERR :: user subscribers :: ${err.message}`);
     throw new ApiError(500, "Something went wrong!");
@@ -135,6 +147,9 @@ const getUserChannelSubscribers = asyncHandler(async (req, res) => {
     );
 });
 
+/**
+ * to fetch the channels subsribed by current user
+ */
 const getUserSubsrciptions = asyncHandler(async (req, res) => {
   const userId = new Types.ObjectId(req.user._id);
 
@@ -162,6 +177,9 @@ const getUserSubsrciptions = asyncHandler(async (req, res) => {
         ],
       },
     },
+    {
+      $unwind: "$subscribedTo"
+    }
   ]);
 
   return res
@@ -175,9 +193,30 @@ const getUserSubsrciptions = asyncHandler(async (req, res) => {
     );
 });
 
+const isSubscribedTo = asyncHandler(async (req, res) => {
+  const { channelId } = req.params;
+  const { user } = req;
+
+  const isSubscribed = await Subscription.findOne({
+    subscriber: new Types.ObjectId(user),
+    channel: new Types.ObjectId(channelId),
+  });
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        isSubscribed,
+        `User had ${isSubscribed ? "subscribed" : "not subscribed"} to this channel`
+      )
+    );
+});
+
 export {
   toggleSubscription,
   getSubscribedChannels,
   getUserChannelSubscribers,
   getUserSubsrciptions,
+  isSubscribedTo,
 };
