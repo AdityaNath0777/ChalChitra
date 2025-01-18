@@ -2,15 +2,16 @@ import axios from "axios";
 import { LoginProps, RegisterUserProps } from "../types/auth.types";
 import { apiConfig } from "@config/api.config";
 
-const BASE_URL = `${apiConfig.baseURL}/users`;
+const authEndpoint = `${apiConfig.baseURL}/users`;
+const { config } = apiConfig;
 
 const loginUser = async (userData: LoginProps) => {
   try {
-    const url = `${BASE_URL}/login`;
-    const config = {
-      headers: { "Content-Type": "application/json" },
-      withCredentials: true, // include cookies for authenticatiion
-    };
+    const url = `${authEndpoint}/login`;
+    // const config = {
+    //   headers: { "Content-Type": "application/json" },
+    //   withCredentials: true, // include cookies for authenticatiion
+    // };
 
     const response = await axios.post(url, userData, config);
     console.log("Login response: ", response);
@@ -30,10 +31,7 @@ const loginUser = async (userData: LoginProps) => {
 
 const logoutUser = async () => {
   try {
-    const url = `${BASE_URL}/logout`;
-    const config = {
-      withCredentials: true,
-    };
+    const url = `${authEndpoint}/logout`;
 
     const res = await axios.post(url, config);
     console.log("logout response: ", res);
@@ -57,11 +55,8 @@ const logoutUser = async () => {
 
 const registerUser = async (newUserInfo: RegisterUserProps) => {
   try {
-    const url = `${BASE_URL}/register`;
-    const config = {
-      headers: { "Content-Type": "multipart/form-data" },
-      withCredential: true,
-    };
+    const url = `${authEndpoint}/register`;
+    config.headers = { "Content-Type": "multipart/form-data" };
 
     const formData = new FormData();
 
@@ -98,10 +93,7 @@ const registerUser = async (newUserInfo: RegisterUserProps) => {
 
 const fetchCurrentUser = async () => {
   try {
-    const url = `${BASE_URL}/current-user`;
-    const config = {
-      withCredentials: true,
-    };
+    const url = `${authEndpoint}/current-user`;
 
     const res = await axios.get(url, config);
 
