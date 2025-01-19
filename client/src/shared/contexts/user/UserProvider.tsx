@@ -44,6 +44,12 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
     if (!user && isLoggedIn) {
       checkLoggedInUser();
     }
+
+    // if not logged in or user logged out 
+    // set the current user null
+    if(!isLoggedIn) {
+      setUser(null);
+    }
   }, [isLoggedIn, user]); // only run during initial render
 
   return (
