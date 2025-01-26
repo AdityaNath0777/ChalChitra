@@ -48,7 +48,7 @@ import dashboardRouter from "./routes/dashboard.routes.js";
 
 app.use("/api/v1/users", userRouter); // middleware to get router
 
-app.use("/api/v1/video", videoRouter); // middleware for video router
+app.use("/api/v1/videos", videoRouter); // middleware for video router
 
 app.use("/api/v1/subscriptions", subscriptionRouter); // middleware for subscription routes
 

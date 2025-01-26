@@ -35,7 +35,9 @@ const UpdateUserProfile = () => {
         ? "Full Name must be 1 to 50 characters long and first letter should be capital"
         : false,
 
-      email: !Validator.validateEmail(formData.email).isValid ? "Valid email is required" : false,
+      email: !Validator.validateEmail(formData.email).isValid
+        ? "Valid email is required"
+        : false,
     };
 
     setErrors(newErrors);
@@ -73,15 +75,19 @@ const UpdateUserProfile = () => {
   // };
 
   return user ? (
-    <div className="w-full mx-auto my-4">
-      <h1 className="text-4xl text-center main-font">Update Profile</h1>
+    <div className="w-full sm:w-4/5 mx-auto my-4">
+      <h1 className="text-lg md:text-xl lg:text-2xl xl:text-3xl text-center main-font">
+        Update Profile
+      </h1>
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col gap-2 my-8 w-3/5 mx-auto "
+        className="flex flex-col gap-2 my-8 w-full text-sm sm:text-base "
         noValidate
       >
-        <label className="flex gap-3 w-full">
-          <div className="min-w-20 text-left">Full Name</div>
+        <label className="flex gap-3 justify-center w-full">
+          <div className="min-w-20 sm:text-base lg:text-lg text-left">
+            Full Name
+          </div>
           <input
             className="px-2 py-1 text-slate-900 font-semibold rounded"
             type="text"
@@ -93,12 +99,12 @@ const UpdateUserProfile = () => {
             <p className="bg-red-500 text-white px-2 py-1 rounded">
               {errors.fullName}
             </p>
-          ) : (
-            <></>
-          )}
+          ) : null}
         </label>
-        <label className="flex gap-3 w-full">
-          <div className="min-w-20 text-left">Email</div>
+        <label className="flex gap-3 justify-center w-full">
+          <div className="min-w-20 sm:text-base lg:text-lg text-left">
+            Email
+          </div>
           <input
             className="px-2 py-1 text-slate-900 font-semibold rounded"
             type="email"
@@ -109,17 +115,14 @@ const UpdateUserProfile = () => {
             aria-required
           />
           {errors.email ? (
-            <p className="bg-red-500 text-white px-2 py-1 rounded">
+            <p className="bg-red-500 text-sm text-white px-2 py-1 rounded">
               {errors.email}
             </p>
-          ) : (
-            <></>
-          )}
+          ) : null}
         </label>
         <Button
           type="submit"
-          className="bg-green-500 my-4 hover:bg-green-600 duration-150 active:translate-y-1"
-          textSize="1.rem"
+          className="bg-green-500 my-4 text-sm sm:text-base md:text-lg hover:bg-green-600 duration-150 active:translate-y-1"
         >
           Update Changes
         </Button>

@@ -2,15 +2,13 @@ import axios from "axios";
 import { UpdateUserProps } from "../types/user.types";
 import { apiConfig } from "@config/api.config";
 
-const BASE_URL = `${apiConfig.baseURL}/users`;
+const usersEndpoint = `${apiConfig.baseURL}/users`;
+const { config } = apiConfig;
 
 const updateUserDetails = async (userInfo: UpdateUserProps) => {
   try {
-    const url = `${BASE_URL}/update-account`;
-    const config = {
-      headers: { "Content-Type": "application/json" },
-      withCredentials: true,
-    };
+    const url = `${usersEndpoint}/update-account`;
+
     const res = await axios.patch(url, userInfo, config);
 
     if (!res.data.success) {
@@ -26,10 +24,7 @@ const updateUserDetails = async (userInfo: UpdateUserProps) => {
 
 const fetchCurrentUserDetails = async () => {
   try {
-    const url = `${BASE_URL}/current-user`;
-    const config = {
-      withCredentials: true,
-    };
+    const url = `${usersEndpoint}/current-user`;
 
     const res = await axios.get(url, config);
 
@@ -56,10 +51,7 @@ const fetchCurrentUserDetails = async () => {
 const fetchUserDetailsById = async (userId: string) => {
   console.log(userId);
   try {
-    const url = `${BASE_URL}/current-user`;
-    const config = {
-      withCredentials: true,
-    };
+    const url = `${usersEndpoint}/current-user`;
 
     const res = await axios.get(url, config);
 
